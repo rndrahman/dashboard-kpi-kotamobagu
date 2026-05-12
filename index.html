@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SPAN SX Dashboard</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- DataTables -->
+<link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+<style>
+
+:root{
+    --primary:#ff6b00;
+    --primary2:#ff8c3a;
+    --dark:#0f172a;
+    --dark2:#1e293b;
+    --text:#334155;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f1f5f9 0%,
+            #eef2ff 100%
+        );
+
+    color:var(--text);
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    padding-bottom:80px;
+}
+
+body::before{
+    content:'';
+    position:fixed;
+
+    width:400px;
+    height:400px;
+
+    background:
+        radial-gradient(
+            rgba(255,107,0,.18),
+            transparent 70%
+        );
+
+    top:-150px;
+    right:-100px;
+
+    z-index:-1;
+}
+
+body::after{
+    content:'';
+    position:fixed;
+
+    width:400px;
+    height:400px;
+
+    background:
+        radial-gradient(
+            rgba(99,102,241,.12),
+            transparent 70%
+        );
+
+    bottom:-150px;
+    left:-100px;
+
+    z-index:-1;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.topbar{
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(15,23,42,.96),
+            rgba(30,41,59,.96)
+        );
+
+    border-radius:30px;
+
+    padding:35px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    box-shadow:
+        0 20px 50px rgba(15,23,42,.18);
+
+}
+
+.topbar::before{
+
+    content:'';
+
+    position:absolute;
+
+    width:260px;
+    height:260px;
+
+    background:
+        radial-gradient(
+            rgba(255,255,255,.12),
+            transparent
+        );
+
+    top:-100px;
+    right:-80px;
+
+}
+
+.brand-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+.dashboard-title{
+
+    font-size:48px;
+
+    font-weight:900;
+
+    color:white;
+
+}
+
+.dashboard-subtitle{
+
+    color:#cbd5e1;
+
+    margin-top:10px;
+
+}
+
+/* =========================
+UPLOAD
+========================= */
+
+.upload-box{
+
+    border:2px dashed rgba(255,255,255,.18);
+
+    border-radius:24px;
+
+    padding:40px;
+
+    text-align:center;
+
+    background:
+        rgba(255,255,255,.05);
+
+    cursor:pointer;
+
+    color:white;
+
+    transition:.3s;
+
+}
+
+.upload-box:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--primary);
+
+}
+
+.upload-icon{
+
+    font-size:42px;
+
+    color:var(--primary);
+
+    margin-bottom:14px;
+
+}
+
+/* =========================
+ACTION
+========================= */
+
+.action-bar{
+
+    background:
+        rgba(255,255,255,.8);
+
+    border-radius:24px;
+
+    padding:20px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+    margin-bottom:28px;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.08);
+
+}
+
+.action-left{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+}
+
+.mode-box{
+
+    background:white;
+
+    padding:14px 18px;
+
+    border-radius:18px;
+
+}
+
+.button-group{
+
+    display:flex;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+
+}
+
+.modern-btn{
+
+    border:none;
+
+    border-radius:16px;
+
+    padding:13px 24px;
+
+    font-weight:700;
+
+    color:white;
+
+    transition:.3s;
+
+    cursor:pointer;
+
+}
+
+.modern-btn:hover{
+
+    transform:translateY(-3px);
+
+}
+
+#screenshotBtn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e293b
+        );
+
+}
+
+#tableScreenshotBtn{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary2)
+        );
+
+}
+
+/* =========================
+KPI
+========================= */
+
+.kpi-card{
+
+    border-radius:28px;
+
+    padding:24px;
+
+    color:white;
+
+    min-height:170px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    transition:.3s;
+
+}
+
+.kpi-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.kpi-card::before{
+
+    content:'';
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    border-radius:50%;
+
+    top:-70px;
+    right:-60px;
+
+}
+
+.kpi-label{
+
+    font-size:13px;
+
+    font-weight:800;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+}
+
+.kpi-value{
+
+    font-size:42px;
+
+    font-weight:900;
+
+    margin-top:20px;
+
+}
+
+.input-modern{
+
+    height:56px;
+
+    border:none;
+
+    border-radius:18px;
+
+    font-size:18px;
+
+    padding-left:18px;
+
+    font-weight:700;
+
+}
+
+/* COLORS */
+
+.card-blue{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.card-green{
+    background:linear-gradient(135deg,#059669,#10b981);
+}
+
+.card-yellow{
+    background:linear-gradient(135deg,#d97706,#f59e0b);
+}
+
+.card-red{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+}
+
+.card-purple{
+    background:linear-gradient(135deg,#7c3aed,#8b5cf6);
+}
+
+.card-cyan{
+    background:linear-gradient(135deg,#0891b2,#22d3ee);
+}
+
+.card-indigo{
+    background:linear-gradient(135deg,#4338ca,#6366f1);
+}
+
+/* =========================
+TABLE
+========================= */
+
+.table-container{
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:28px;
+
+    box-shadow:
+        0 15px 40px rgba(15,23,42,.08);
+
+}
+
+.table-title{
+
+    font-size:28px;
+
+    font-weight:900;
+
+    margin-bottom:20px;
+
+}
+
+table.dataTable thead th{
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e293b
+        ) !important;
+
+    color:white !important;
+
+    border:none !important;
+
+}
+
+table.dataTable tbody tr:hover{
+
+    background:#f8fafc !important;
+
+}
+
+/* =========================
+FOOTER
+========================= */
+
+.footer-marquee{
+
+    position:fixed;
+
+    bottom:0;
+    left:0;
+
+    width:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0f172a,
+            #1e293b
+        );
+
+    color:white;
+
+    overflow:hidden;
+
+    padding:12px 0;
+
+    z-index:9999;
+
+}
+
+.footer-track{
+
+    display:flex;
+
+    white-space:nowrap;
+
+    animation:marquee 18s linear infinite;
+
+}
+
+.footer-text{
+
+    padding-right:120px;
+
+    font-weight:700;
+
+}
+
+@keyframes marquee{
+
+    from{
+        transform:translateX(100%);
+    }
+
+    to{
+        transform:translateX(-100%);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .dashboard-title{
+        font-size:34px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container-fluid py-4 px-lg-4">
+
+    <!-- HEADER -->
+    <div class="topbar mb-4">
+
+        <div class="row align-items-center g-4">
+
+            <div class="col-lg-6">
+
+                <div class="brand-badge">
+                    <i class="fa-solid fa-chart-line"></i>
+                    SPAN SX
+                </div>
+
+                <div class="dashboard-title">
+                    SPAN SX Dashboard
+                </div>
+
+                <div class="dashboard-subtitle">
+                    Smart KPI monitoring dashboard.
+                </div>
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <label class="upload-box w-100">
+
+                    <input 
+                        type="file"
+                        id="excelFile"
+                        accept=".xlsx,.xls"
+                        hidden>
+
+                    <div class="upload-icon">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+
+                    <h5 class="fw-bold mb-2">
+                        Upload File Excel
+                    </h5>
+
+                    <div class="text-light opacity-75">
+                        Klik untuk memilih file
+                    </div>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ACTION -->
+    <div class="action-bar">
+
+        <div class="action-left">
+
+            <div class="mode-box">
+
+                <div class="form-check form-switch m-0">
+
+                    <input 
+                        class="form-check-input"
+                        type="checkbox"
+                        id="idleModeToggle"
+                        style="width:60px;height:30px;cursor:pointer;">
+
+                    <label class="form-check-label fw-bold ms-2">
+                        Idle Time Mode
+                    </label>
+
+                </div>
+
+            </div>
+
+            <div class="mode-box">
+
+                <label class="fw-bold mb-2 d-block">
+                    Filter Performance
+                </label>
+
+                <select
+                    id="performanceFilter"
+                    class="form-select">
+
+                    <option value="">
+                        Semua Performance
+                    </option>
+
+                    <option value="0-25">
+                        0% - 25%
+                    </option>
+
+                    <option value="25-50">
+                        25% - 50%
+                    </option>
+
+                    <option value="50-75">
+                        50% - 75%
+                    </option>
+
+                    <option value="75-100">
+                        75% - 100%
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="button-group">
+
+            <button id="screenshotBtn" class="modern-btn">
+                📸 Screenshot KPI
+            </button>
+
+            <button id="tableScreenshotBtn" class="modern-btn">
+                📋 Screenshot Table
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- KPI -->
+    <div class="row g-4 mb-4" id="statsSection">
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-blue">
+                <div class="kpi-label">Total Volume</div>
+
+                <input 
+                    type="number"
+                    id="totalVolume"
+                    class="form-control input-modern mt-3"
+                    placeholder="Input volume">
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-green">
+                <div class="kpi-label">Success Rate</div>
+                <div class="kpi-value" id="successRate">0%</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-cyan">
+                <div class="kpi-label">Success</div>
+                <div class="kpi-value" id="successBox">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-yellow">
+                <div class="kpi-label">Onhold</div>
+                <div class="kpi-value" id="onholdBox">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-red">
+                <div class="kpi-label">Failed</div>
+                <div class="kpi-value" id="failedBox">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-purple">
+                <div class="kpi-label">Remaining</div>
+                <div class="kpi-value" id="remainingBox">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-indigo">
+                <div class="kpi-label">Total MP</div>
+                <div class="kpi-value" id="mpBox">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4">
+            <div class="kpi-card card-blue">
+                <div class="kpi-label">Total Handover</div>
+                <div class="kpi-value" id="handoverBox">0</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-container">
+
+        <div class="table-title">
+            KPI Overview
+        </div>
+
+        <div class="table-responsive">
+
+            <table
+                id="excelTable"
+                class="table table-hover w-100 align-middle">
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer-marquee">
+
+    <div class="footer-track">
+
+        <div class="footer-text">
+            PRESENTED BY RANDHA.RAHMAN@SPXEXPRESS.COM • SPAN SX DASHBOARD
+        </div>
+
+        <div class="footer-text">
+            PRESENTED BY RANDHA.RAHMAN@SPXEXPRESS.COM • SPAN SX DASHBOARD
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+
+let dataTable = null;
+let totalSuccess = 0;
+let originalExcelData = [];
+
+/* =========================
+UPLOAD EXCEL
+========================= */
+
+document
+.getElementById('excelFile')
+.addEventListener('change', function(e){
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        const data =
+            new Uint8Array(event.target.result);
+
+        const workbook =
+            XLSX.read(data,{type:'array'});
+
+        const worksheet =
+            workbook.Sheets[
+                workbook.SheetNames[0]
+            ];
+
+        const json =
+            XLSX.utils.sheet_to_json(
+                worksheet,
+                {
+                    header:1,
+                    defval:""
+                }
+            );
+
+        originalExcelData = json;
+
+        renderTable(originalExcelData);
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+});
+
+/* =========================
+RENDER TABLE
+========================= */
+
+function renderTable(data){
+
+    if(dataTable){
+        dataTable.destroy();
+    }
+
+    const table =
+        document.getElementById('excelTable');
+
+    table.innerHTML = "";
+
+    if(data.length === 0) return;
+
+    const idleMode =
+        document.getElementById('idleModeToggle').checked;
+
+    const performanceFilter =
+        document.getElementById('performanceFilter').value;
+
+    const headers = data[0];
+
+    let visibleColumns;
+
+    /* =========================
+    MODE TABEL
+    ========================= */
+
+    if(performanceFilter){
+
+        // Kolom 1,2,9,10,11
+        visibleColumns = [0,1,8,9,10];
+
+    }else if(idleMode){
+
+        // Kolom 1,2,3,4,9,10,12,19
+        visibleColumns = [0,1,2,3,8,9,11,18];
+
+    }else{
+
+        visibleColumns =
+            headers.map((_,index)=>index);
+
+    }
+
+    let thead = "<thead><tr>";
+    let tbody = "<tbody>";
+
+    visibleColumns.forEach(index=>{
+
+        thead += `<th>${headers[index] ?? ""}</th>`;
+
+    });
+
+    thead += "</tr></thead>";
+
+    totalSuccess = 0;
+
+    let totalOnhold = 0;
+    let totalFailed = 0;
+    let totalRemaining = 0;
+    let totalMP = 0;
+    let totalHandover = 0;
+
+    for(let i=1;i<data.length;i++){
+
+        /* =========================
+        FILTER IDLE MODE
+        ========================= */
+
+        if(idleMode && !performanceFilter){
+
+            let idleValue =
+                String(data[i][18] ?? "").trim();
+
+            let parts =
+                idleValue.split(":");
+
+            let totalMinutes = 0;
+
+            if(parts.length >= 2){
+
+                let hour =
+                    parseInt(parts[0]) || 0;
+
+                let minute =
+                    parseInt(parts[1]) || 0;
+
+                totalMinutes =
+                    (hour * 60) + minute;
+
+            }
+
+            if(totalMinutes <= 90){
+                continue;
+            }
+
+        }
+
+        /* =========================
+        FILTER PERFORMANCE
+        ========================= */
+
+        if(performanceFilter){
+
+            let perf =
+                parseFloat(data[i][10]) || 0;
+
+            let isValid = false;
+
+            switch(performanceFilter){
+
+                case "0-25":
+                    isValid = perf >= 0 && perf <= 25;
+                    break;
+
+                case "25-50":
+                    isValid = perf > 25 && perf <= 50;
+                    break;
+
+                case "50-75":
+                    isValid = perf > 50 && perf <= 75;
+                    break;
+
+                case "75-100":
+                    isValid = perf > 75 && perf <= 100;
+                    break;
+
+            }
+
+            if(!isValid){
+                continue;
+            }
+
+        }
+
+        tbody += "<tr>";
+
+        visibleColumns.forEach(index=>{
+
+            tbody += `
+                <td>${data[i][index] ?? ""}</td>
+            `;
+
+        });
+
+        tbody += "</tr>";
+
+        let handover =
+            parseFloat(data[i][8]) || 0;
+
+        let success =
+            parseFloat(data[i][9]) || 0;
+
+        let remaining =
+            parseFloat(data[i][11]) || 0;
+
+        let failed =
+            parseFloat(data[i][13]) || 0;
+
+        let onhold =
+            parseFloat(data[i][16]) || 0;
+
+        totalHandover += handover;
+        totalSuccess += success;
+        totalRemaining += remaining;
+        totalFailed += failed;
+        totalOnhold += onhold;
+
+        if(success > 0){
+            totalMP++;
+        }
+
+    }
+
+    tbody += "</tbody>";
+
+    table.innerHTML = thead + tbody;
+
+    dataTable =
+        $('#excelTable').DataTable({
+
+            scrollX:true,
+            pageLength:10
+
+        });
+
+    document.getElementById('successBox')
+    .innerText = totalSuccess;
+
+    document.getElementById('onholdBox')
+    .innerText = totalOnhold;
+
+    document.getElementById('failedBox')
+    .innerText = totalFailed;
+
+    document.getElementById('remainingBox')
+    .innerText = totalRemaining;
+
+    document.getElementById('mpBox')
+    .innerText = totalMP;
+
+    document.getElementById('handoverBox')
+    .innerText = totalHandover;
+
+    calculateSuccessRate();
+
+}
+
+/* =========================
+EVENT
+========================= */
+
+document
+.getElementById('idleModeToggle')
+.addEventListener('change', function(){
+
+    renderTable(originalExcelData);
+
+});
+
+document
+.getElementById('performanceFilter')
+.addEventListener('change', function(){
+
+    renderTable(originalExcelData);
+
+});
+
+/* =========================
+SUCCESS RATE
+========================= */
+
+document
+.getElementById('totalVolume')
+.addEventListener('input', calculateSuccessRate);
+
+function calculateSuccessRate(){
+
+    const totalVolume =
+        parseFloat(
+            document.getElementById('totalVolume').value
+        ) || 0;
+
+    let rate = 0;
+
+    if(totalVolume > 0){
+
+        rate =
+            (totalSuccess / totalVolume) * 100;
+
+    }
+
+    document
+    .getElementById('successRate')
+    .innerText =
+        rate.toFixed(2) + "%";
+
+}
+
+/* =========================
+SCREENSHOT KPI
+========================= */
+
+document
+.getElementById('screenshotBtn')
+.addEventListener('click', async function(){
+
+    const canvas =
+        await html2canvas(
+            document.getElementById('statsSection'),
+            {
+                scale:2
+            }
+        );
+
+    canvas.toBlob(async function(blob){
+
+        await navigator.clipboard.write([
+
+            new ClipboardItem({
+                'image/png':blob
+            })
+
+        ]);
+
+        alert("Screenshot KPI berhasil dicopy");
+
+    });
+
+});
+
+/* =========================
+SCREENSHOT TABLE
+========================= */
+
+document
+.getElementById('tableScreenshotBtn')
+.addEventListener('click', async function(){
+
+    const canvas =
+        await html2canvas(
+            document.querySelector('.table-container'),
+            {
+                scale:2
+            }
+        );
+
+    canvas.toBlob(async function(blob){
+
+        await navigator.clipboard.write([
+
+            new ClipboardItem({
+                'image/png':blob
+            })
+
+        ]);
+
+        alert("Screenshot tabel berhasil dicopy");
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
