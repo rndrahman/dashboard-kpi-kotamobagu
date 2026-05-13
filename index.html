@@ -321,6 +321,17 @@ ACTION
 
 }
 
+#summaryScreenshotBtn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #8b5cf6
+        );
+
+}
+
 /* =========================
 KPI
 ========================= */
@@ -451,6 +462,8 @@ TABLE
     box-shadow:
         0 15px 40px rgba(15,23,42,.08);
 
+    margin-bottom:28px;
+
 }
 
 .table-title{
@@ -482,6 +495,53 @@ table.dataTable tbody tr:hover{
 
     background:#f8fafc !important;
 
+}
+
+/* =========================
+WHATSAPP BUTTON
+========================= */
+
+.wa-btn{
+
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #25d366,
+            #128c7e
+        );
+
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    font-size:18px;
+
+    box-shadow:
+        0 8px 18px rgba(37,211,102,.25);
+
+}
+
+.wa-btn:hover{
+
+    transform:translateY(-3px) scale(1.05);
+
+}
+
+.wa-cell{
+    text-align:center;
 }
 
 /* =========================
@@ -681,6 +741,10 @@ FOOTER
                 📋 Screenshot Table
             </button>
 
+            <button id="summaryScreenshotBtn" class="modern-btn">
+                📊 Screenshot Performance
+            </button>
+
         </div>
 
     </div>
@@ -751,7 +815,7 @@ FOOTER
 
     </div>
 
-    <!-- TABLE -->
+    <!-- TABLE KPI -->
     <div class="table-container">
 
         <div class="table-title">
@@ -762,6 +826,24 @@ FOOTER
 
             <table
                 id="excelTable"
+                class="table table-hover w-100 align-middle">
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- SUMMARY TABLE -->
+    <div class="table-container" id="summaryContainer">
+
+        <div class="table-title">
+            Performance Summary
+        </div>
+
+        <div class="table-responsive">
+
+            <table
+                id="summaryTable"
                 class="table table-hover w-100 align-middle">
             </table>
 
@@ -804,6 +886,7 @@ FOOTER
 <script>
 
 let dataTable = null;
+let summaryDataTable = null;
 let totalSuccess = 0;
 let originalExcelData = [];
 
@@ -846,6 +929,7 @@ document
         originalExcelData = json;
 
         renderTable(originalExcelData);
+        renderSummaryTable(originalExcelData);
 
     };
 
@@ -880,18 +964,12 @@ function renderTable(data){
 
     let visibleColumns;
 
-    /* =========================
-    MODE TABEL
-    ========================= */
-
     if(performanceFilter){
 
-        // Kolom 1,2,9,10,11
         visibleColumns = [0,1,8,9,10];
 
     }else if(idleMode){
 
-        // Kolom 1,2,3,4,9,10,12,19
         visibleColumns = [0,1,2,3,8,9,11,18];
 
     }else{
@@ -910,6 +988,10 @@ function renderTable(data){
 
     });
 
+    if(performanceFilter){
+        thead += `<th>WhatsApp</th>`;
+    }
+
     thead += "</tr></thead>";
 
     totalSuccess = 0;
@@ -921,10 +1003,6 @@ function renderTable(data){
     let totalHandover = 0;
 
     for(let i=1;i<data.length;i++){
-
-        /* =========================
-        FILTER IDLE MODE
-        ========================= */
 
         if(idleMode && !performanceFilter){
 
@@ -955,14 +1033,10 @@ function renderTable(data){
 
         }
 
-        /* =========================
-        FILTER PERFORMANCE
-        ========================= */
+        let perf =
+            parseFloat(data[i][10]) || 0;
 
         if(performanceFilter){
-
-            let perf =
-                parseFloat(data[i][10]) || 0;
 
             let isValid = false;
 
@@ -1002,15 +1076,85 @@ function renderTable(data){
 
         });
 
+        if(performanceFilter){
+
+            const riderName =
+                data[i][1] ?? "Rider";
+
+            const handover =
+                data[i][8] ?? 0;
+
+            const success =
+                data[i][9] ?? 0;
+
+            const remaining =
+                data[i][11] ?? 0;
+
+            let message = "";
+
+            if(
+                performanceFilter === "0-25" ||
+                performanceFilter === "25-50"
+            ){
+
+                message =
+`Halo ${riderName}
+
+Performance delivery saat ini masih ${perf.toFixed(2)}%.
+
+Segera push pengantaran dan maksimalkan seluruh paket delivery yang masih tersedia.
+
+Handover : ${handover}
+Success : ${success}
+Remaining : ${remaining}
+
+Terima kasih.`;
+
+            }else{
+
+                message =
+`Halo ${riderName}
+
+Performance delivery saat ini sudah ${perf.toFixed(2)}%.
+
+Mohon maksimalkan sisa paket yang masih tersedia agar performance bisa lebih optimal.
+
+Handover : ${handover}
+Success : ${success}
+Remaining : ${remaining}
+
+Semangat dan terima kasih.`;
+
+            }
+
+            const encodedMessage =
+                encodeURIComponent(message);
+
+            tbody += `
+                <td class="wa-cell">
+
+                    <button
+                        class="wa-btn"
+                        onclick="copyWhatsappMessage('${encodedMessage}')">
+
+                        <i class="fa-brands fa-whatsapp"></i>
+
+                    </button>
+
+                </td>
+            `;
+
+        }
+
         tbody += "</tr>";
 
-        let handover =
+        let handoverTotal =
             parseFloat(data[i][8]) || 0;
 
-        let success =
+        let successTotal =
             parseFloat(data[i][9]) || 0;
 
-        let remaining =
+        let remainingTotal =
             parseFloat(data[i][11]) || 0;
 
         let failed =
@@ -1019,13 +1163,13 @@ function renderTable(data){
         let onhold =
             parseFloat(data[i][16]) || 0;
 
-        totalHandover += handover;
-        totalSuccess += success;
-        totalRemaining += remaining;
+        totalHandover += handoverTotal;
+        totalSuccess += successTotal;
+        totalRemaining += remainingTotal;
         totalFailed += failed;
         totalOnhold += onhold;
 
-        if(success > 0){
+        if(successTotal > 0){
             totalMP++;
         }
 
@@ -1062,6 +1206,107 @@ function renderTable(data){
     .innerText = totalHandover;
 
     calculateSuccessRate();
+
+}
+
+/* =========================
+SUMMARY TABLE
+========================= */
+
+function renderSummaryTable(data){
+
+    if(summaryDataTable){
+        summaryDataTable.destroy();
+    }
+
+    const table =
+        document.getElementById('summaryTable');
+
+    table.innerHTML = "";
+
+    if(data.length === 0) return;
+
+    const groupedData = {};
+
+    for(let i=1;i<data.length;i++){
+
+        const key =
+            String(data[i][3] ?? "").trim();
+
+        if(!key) continue;
+
+        if(!groupedData[key]){
+
+            groupedData[key] = {
+
+                col5:0,
+                col10:0
+
+            };
+
+        }
+
+        groupedData[key].col5 +=
+            parseFloat(data[i][4]) || 0;
+
+        groupedData[key].col10 +=
+            parseFloat(data[i][9]) || 0;
+
+    }
+
+    let thead = `
+        <thead>
+            <tr>
+                <th>${data[0][3] ?? "Kolom 4"}</th>
+                <th>${data[0][4] ?? "Kolom 5"}</th>
+                <th>${data[0][9] ?? "Kolom 10"}</th>
+                <th>${data[0][10] ?? "Kolom 11"}</th>
+            </tr>
+        </thead>
+    `;
+
+    let tbody = "<tbody>";
+
+    Object.keys(groupedData).forEach(key=>{
+
+        const totalCol5 =
+            groupedData[key].col5;
+
+        const totalCol10 =
+            groupedData[key].col10;
+
+        let percentage = 0;
+
+        if(totalCol5 > 0){
+
+            percentage =
+                (totalCol10 / totalCol5) * 100;
+
+        }
+
+        tbody += `
+            <tr>
+                <td>${key}</td>
+                <td>${totalCol5}</td>
+                <td>${totalCol10}</td>
+                <td>${percentage.toFixed(2)}%</td>
+            </tr>
+        `;
+
+    });
+
+    tbody += "</tbody>";
+
+    table.innerHTML = thead + tbody;
+
+    summaryDataTable =
+        $('#summaryTable').DataTable({
+
+            scrollX:true,
+            pageLength:10,
+            order:[[3,'desc']]
+
+        });
 
 }
 
@@ -1113,6 +1358,25 @@ function calculateSuccessRate(){
     .getElementById('successRate')
     .innerText =
         rate.toFixed(2) + "%";
+
+}
+
+/* =========================
+COPY WHATSAPP MESSAGE
+========================= */
+
+async function copyWhatsappMessage(message){
+
+    const decodedMessage =
+        decodeURIComponent(message);
+
+    await navigator.clipboard.writeText(
+        decodedMessage
+    );
+
+    alert(
+        "Template WhatsApp berhasil dicopy"
+    );
 
 }
 
@@ -1175,6 +1439,39 @@ document
         ]);
 
         alert("Screenshot tabel berhasil dicopy");
+
+    });
+
+});
+
+/* =========================
+SCREENSHOT PERFORMANCE TABLE
+========================= */
+
+document
+.getElementById('summaryScreenshotBtn')
+.addEventListener('click', async function(){
+
+    const canvas =
+        await html2canvas(
+            document.getElementById('summaryContainer'),
+            {
+                scale:4,
+                useCORS:true
+            }
+        );
+
+    canvas.toBlob(async function(blob){
+
+        await navigator.clipboard.write([
+
+            new ClipboardItem({
+                'image/png':blob
+            })
+
+        ]);
+
+        alert("Screenshot Performance berhasil dicopy");
 
     });
 
